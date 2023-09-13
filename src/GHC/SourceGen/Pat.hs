@@ -28,6 +28,7 @@ import GHC.SourceGen.Type.Internal (patSigType)
 
 #if MIN_VERSION_ghc(9,2,0)
 import GHC.Parser.Annotation (EpAnn(..))
+import GHC (noHsTok)
 #endif
 
 -- | A wild pattern (@_@).
@@ -40,7 +41,7 @@ wildP = noExtOrPlaceHolder WildPat
 -- > =====
 -- > asP "a" (var "B")
 asP :: RdrNameStr -> Pat' -> Pat'
-v `asP` p = withEpAnnNotUsed AsPat (valueRdrName v) $ builtPat $ parenthesize p
+v `asP` p = withEpAnnNotUsed AsPat (valueRdrName v) noHsTok  (builtPat $ parenthesize p)
 
 -- | A pattern constructor.
 --
