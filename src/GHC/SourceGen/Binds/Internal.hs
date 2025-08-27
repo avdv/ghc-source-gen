@@ -148,7 +148,7 @@ matchGroup context matches =
 mkGRHSs :: RawGRHSs -> GRHSs' LHsExpr'
 mkGRHSs g = withEmptyEpAnnComments GRHSs
 --mkGRHSs g = GRHSs emptyComments
-#if MIN_VERSION_ghc(9,14,0)
+#if MIN_VERSION_ghc(9,13,0)
                 (NonEmpty.fromList $ map mkLocated $ rawGRHSs g)
 #elif MIN_VERSION_ghc(9,4,0)
                 (map mkLocated $ rawGRHSs g)

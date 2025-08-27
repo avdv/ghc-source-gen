@@ -87,7 +87,11 @@ tuplePromotedTy = withPlaceHolders (withEpAnnNotUsed HsExplicitTupleTy) . map mk
 -- > var "a" --> var "b"
 (-->) :: HsType' -> HsType' -> HsType'
 a --> b =
-#if MIN_VERSION_ghc(9,10,0)
+#if MIN_VERSION_ghc(9,13,0)
+     (noExt HsFunTy)
+         (HsUnannotated (EpArrow (EpUniTok noSpanAnchor NormalSyntax)))
+         (parenthesizeTypeForFun $ mkLocated a) (mkLocated b)
+#elif MIN_VERSION_ghc(9,10,0)
      (noExt HsFunTy)
          --(HsUnannotated (EpArrow (EpUniTok noSpanAnchor NormalSyntax)))
          (HsUnrestrictedArrow (EpUniTok noSpanAnchor NormalSyntax))

@@ -62,7 +62,7 @@ import SrcLoc (unLoc, GenLocated(..))
 import GHC.Parser.Annotation (EpAnn(..))
 #endif
 
--- GHC913 import qualified Data.List.NonEmpty as NonEmpty
+import GHC.Parser.Annotation (EpAnn(..))
 import GHC.SourceGen.Binds.Internal
 import GHC.SourceGen.Binds
 import GHC.SourceGen.Expr.Internal
@@ -73,6 +73,9 @@ import GHC.SourceGen.Type.Internal
     , sigWcType
     , wcType
     )
+#if MIN_VERSION_ghc(9,13,0)
+import qualified Data.List.NonEmpty as NonEmpty
+#endif
 
 -- | An overloaded label, as used with the @OverloadedLabels@ extension.
 --
@@ -164,11 +167,12 @@ if' x y z = mkHsIf
 -- >     , guardedStmt (var "otherwise") $ rhs (string "h")
 -- >     ]
 multiIf :: [GuardedExpr] -> HsExpr'
-#if MIN_VERSION_ghc(9,12,0)
+#if MIN_VERSION_ghc(9,13,0)
+multiIf = withPlaceHolder (HsMultiIf (NoEpTok, NoEpTok, NoEpTok)) . NonEmpty.fromList . map mkLocated
+#elif MIN_VERSION_ghc(9,12,0)
 multiIf = withPlaceHolder (HsMultiIf (NoEpTok, NoEpTok, NoEpTok)) . map mkLocated
 #elif MIN_VERSION_ghc(9,10,0)
 multiIf = withPlaceHolder (HsMultiIf []) . map mkLocated
--- GHC913 multiIf = withPlaceHolder (HsMultiIf (NoEpTok, NoEpTok, NoEpTok)) . NonEmpty.fromList . map mkLocated
 #elif MIN_VERSION_ghc(9,4,0)
 multiIf = withPlaceHolder (withEpAnnNotUsed HsMultiIf) . map mkLocated
 #else
